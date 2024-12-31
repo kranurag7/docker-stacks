@@ -1,0 +1,21 @@
+FROM cgr.dev/chainguard/wolfi-base:latest
+
+ARG NB_USER="jovyan"
+ARG NB_UID="1000"
+ARG NB_GID="100"
+
+RUN apk add python-3.12 py3.12-pip tini bash shadow
+RUN useradd --no-log-init --create-home --shell /bin/bash --uid "${NB_UID}" --no-user-group "${NB_USER}"
+RUN pip install jupyterlab
+RUN pip install nbclassic
+RUN pip install notebook
+RUN mkdir -p /usr/local/bin/start-notebook.d
+RUN mkdir -p /usr/local/bin/before-notebook.d
+
+COPY * /usr/local/bin/
+
+USER jovyan
+
+ENTRYPOINT ["tini", "-g", "--", "start.sh"]
+CMD ["start-notebook.py"]
+
