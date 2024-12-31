@@ -9,6 +9,7 @@ RUN useradd --no-log-init --create-home --shell /bin/bash --uid "${NB_UID}" --no
 RUN pip install jupyterlab
 RUN pip install nbclassic
 RUN pip install notebook
+RUN jupyter server --generate-config && jupyter lab clean
 RUN mkdir -p /usr/local/bin/start-notebook.d
 RUN mkdir -p /usr/local/bin/before-notebook.d
 
@@ -18,4 +19,4 @@ USER jovyan
 
 ENTRYPOINT ["tini", "-g", "--", "start.sh"]
 CMD ["start-notebook.py"]
-
+WORKDIR "/home/jovyan"
